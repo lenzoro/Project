@@ -1,0 +1,41 @@
+<head>
+    <title>To Do List</title>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>Todo List</h1>
+      {{>mainbody}}
+    </header>
+ 
+    <ul>
+      {{#each tasks}}
+        {{> task}}
+      {{/each}}
+    </ul>
+  </div>
+</body>
+ 
+<template name="mainbody">
+<header>
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+                        <h4 class="text-white">Get Started</h4>
+                       {{>add}}
+                    </div>
+                 </div>
+             </div>
+    
+</header>
+</template>
+<template name= "add">
+   <div class="row">
+        <div class="col">
+             <form class="new-task">
+        <input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
+      </form>
+        </div>
+    </div> 
+</template>
