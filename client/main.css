@@ -1,4 +1,6 @@
 body {
   padding: 10px;
   font-family: sans-serif;
+  background-image: url('wall.jpg');
+  background-size: cover;
 }

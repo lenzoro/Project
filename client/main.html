@@ -1,41 +1,93 @@
 <head>
-    <title>To Do List</title>
+		<title>To Do List</title>
 </head>
 
 <body>
-  <div class="container">
-    <header>
-      <h1>Todo List</h1>
-      {{>mainbody}}
-    </header>
- 
-    <ul>
-      {{#each tasks}}
-        {{> task}}
-      {{/each}}
-    </ul>
-  </div>
+	<div class="container">
+		<header>
+			<h1>Todo List</h1>
+			{{> loginButtons}}
+			{{>mainbody}}
+			{{> task}}
+		</header>
+	</div>
 </body>
  
 <template name="mainbody">
-<header>
-            <div class="container">
-                <div class="row">
-                    <div class="col-sm-8 col-md-7 py-4">
-                        <h4 class="text-white">Get Started</h4>
-                       {{>add}}
-                    </div>
-                 </div>
-             </div>
-    
-</header>
+	<header>
+		<div class="container">
+				<div class="row">
+						<div class="col-sm-8 col-md-7 py-4">
+								<h4>Get Started</h4>
+							 {{>add}}
+						</div>
+				 </div>
+		 </div>
+			<div class="row">
+					
+						<div class="col-sm-8 col-md-7 py-4">
+							
+								
+								
+						</div>
+				 </div>
+				 {{#if currentUser}}  
+				 <div class="row">
+						<div class="col-sm-8 col-md-7 py-4">
+								<h4>Private Tasks</h4>
+							 {{>addprivate}}
+						</div>
+				 </div>
+			<div class="row">
+					
+						<div class="col-sm-8 col-md-7 py-4">
+							
+								
+								
+						</div>
+				 </div>
+				{{/if}}      
+	</header>
 </template>
+
+<template name="task">
+	{{#each MainAll}}
+	<div class="row" id="{{_id}}">
+		<div class="col">		
+			<p>{{Task}}</p>
+		</div>
+
+		<div class="col">
+			{{#if currentUser}}		
+			<button type="button" class="btn btn-danger js-delete">Delete</button>
+			{{/if}}
+					<div class="custom-control custom-checkbox">
+			  <input type="checkbox" class="custom-control-input" id="completed{{_id}}">
+			  <label class="custom-control-label" for="completed{{_id}}"> Completed</label>
+			</div>
+		</div>	
+	</div>
+	{{/each}}
+</template>
+
 <template name= "add">
-   <div class="row">
-        <div class="col">
-             <form class="new-task">
-        <input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
-      </form>
-        </div>
-    </div> 
+	 <div class="row">
+				<div class="col">
+						 <form class="new-task">
+				<input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
+			</form>
+			<!-- https://javascript.info/events-change-input -->
+				</div>
+		</div> 
+</template>
+
+<template name= "addprivate">
+	 <div class="row">
+				<div class="col">
+						 <form class="new-task">
+				<input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
+			</form>
+			<!-- https://javascript.info/events-change-input -->
+				</div>
+		</div> 
 </template>
