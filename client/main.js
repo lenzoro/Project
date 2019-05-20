@@ -8,6 +8,13 @@ Template.task.helpers({
   MainAll() {
     return tasksDB.find({});
   },
+  	userLoggedin(){
+  		var logged = tasksDB.findOne({_id:this._id}).postedby;
+  		return Meteor.users.findOne({_id:this._id}).username;
+  	},
+  	userID(){
+  		return tasksDB({_id:this._id}).postedby;
+  	},
 });
 
 Accounts.ui.config({
