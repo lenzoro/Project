@@ -1,94 +1,136 @@
 <head>
-		<title>To Do List</title>
+        <title>To Do List</title>
 </head>
 
 <body>
-	<div class="container">
-		<header>
-			<h1>Todo List</h1>
-			{{> loginButtons}}
-			{{>mainbody}}
-			{{> task}}
-		</header>
-	</div>
+    <div class="container">
+        <header>
+            <h1>Todo List</h1>
+            {{> loginButtons}}
+            {{>mainbody}}
+            {{> task}}
+        </header>
+    </div>
 </body>
  
 <template name="mainbody">
-	<header>
-		<div class="container">
-				<div class="row">
-						<div class="col-sm-8 col-md-7 py-4">
-								<h4>Get Started</h4>
-							 {{>add}}
-						</div>
-				 </div>
-		 </div>
-			<div class="row">
-					
-						<div class="col-sm-8 col-md-7 py-4">
-							
-								
-								
-						</div>
-				 </div>
-				 {{#if currentUser}}  
-				 <div class="row">
-						<div class="col-sm-8 col-md-7 py-4">
-								<h4>Private Tasks</h4>
-							 {{>addprivate}}
-						</div>
-				 </div>
-			<div class="row">
-					
-						<div class="col-sm-8 col-md-7 py-4">
-							
-								
-								
-						</div>
-				 </div>
-				{{/if}}      
-	</header>
+    <header>
+        <div class="container">
+
+                <div class="row">
+                        <div class="col-sm-8 col-md-7 py-4">
+                            {{#if currentUser}}  
+                                <h4>Get Started</h4>
+                             {{>add}}
+                             {{/if}}
+                        </div>
+                 </div>
+         </div>
+            <div class="row">
+                    
+                        <div class="col-sm-8 col-md-7 py-4">
+                            
+                                
+                                
+                        </div>
+                 </div>
+                 {{#if currentUser}}  
+            <div class="row">
+                    
+                        <div class="col-sm-8 col-md-7 py-4">
+                            
+                                
+                                
+                        </div>
+                 </div>
+                {{/if}}      
+    </header>
 </template>
 
 <template name="task">
-	{{#each MainAll}}
-	<div class="row" id="{{_id}}">
-		<div class="col">		
-			<p>{{Task}}</p>
-			<h4>Posted by <a href="#" id={{userID}} class="userclick">{{userLoffedin}}</a></h4>
-		</div>
+    {{#each MainAll}}
+    <div class="row" id="{{_id}}">
+        {{#if isPrivate}}
+            <div class="col">       
+                <p>
+                    <b>(Private)</b> {{Task}} <a href="#" id={{userID}} class="userclick text-small" style="font-size:60%">by {{user}}</a>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input js-completed" checked={{Complete}} id="completed{{_id}}">
+                        <label class="custom-control-label" for="completed{{_id}}"> Completed</label>
+                    </div>
 
-		<div class="col">
-			{{#if currentUser}}		
-			<button type="button" class="btn btn-danger js-delete">Delete</button>
-			{{/if}}
-					<div class="custom-control custom-checkbox">
-			  <input type="checkbox" class="custom-control-input" id="completed{{_id}}">
-			  <label class="custom-control-label" for="completed{{_id}}"> Completed</label>
-			</div>
-		</div>	
-	</div>
-	{{/each}}
+                </p>
+            </div>
+            <div class="col">
+                {{#if currentUser}}     
+                    <div class="form-row align-items-center">
+                        <div class="col-auto my-1">
+                            <label class="mr-sm-2 sr-only" for="TaskStatus{{_id}}">Task Status</label>
+                            <select class="custom-select mr-sm-2" id="TaskStatus{{_id}}">
+                                <option selected>{{Status}}</option>
+                                <option value="Public" >Public</option>
+                                <option value="Private">Private</option>
+                            </select>
+                        </div>
+                        <div class="col-auto my-1">
+                            <button type="submit" class="btn btn-primary js-statuschange">Save</button>
+                            <button type="button" class="btn btn-danger js-delete">Delete</button>
+                        </div>
+                    </div>
+                {{/if}} 
+            </div>
+        {{/if}}
+
+        {{#if isPublic}}
+            <div class="col">       
+                <p>
+                    {{Task}} <a href="#" id={{userID}} class="userclick text-small" style="font-size:60%">by {{user}}</a>
+                    <div class="custom-control custom-checkbox">
+                      <input type="checkbox" class="custom-control-input js-completed" checked={{Complete}} id="completed{{_id}}">
+                      <label class="custom-control-label" for="completed{{_id}}"> Completed</label>
+                    </div>
+                </p>
+            </div>
+            <div class="col">
+                {{#if currentUser}}     
+                    <div class="form-row align-items-center">
+                        <div class="col-auto my-1">
+                            <label class="mr-sm-2 sr-only" for="TaskStatus{{_id}}">Task Status</label>
+                            <select class="custom-select mr-sm-2" id="TaskStatus{{_id}}">
+                                <option selected value="Public" >Public</option>
+                                <option value="Private">Private</option>
+                            </select>
+                        </div>
+                        <div class="col-auto my-1">
+                            <button type="submit" class="btn btn-primary js-statuschange">Save</button>
+                            <button type="button" class="btn btn-danger js-delete">Delete</button>
+                        </div>
+                    </div>
+                {{/if}} 
+            </div>
+        {{/if}} 
+    </div>
+    {{/each}}
 </template>
 
 <template name= "add">
-	 <div class="row">
-				<div class="col">
-						 <form class="new-task">
-				<input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
-			</form>
-			<!-- https://javascript.info/events-change-input -->
-				</div>
-		</div> 
+     <div class="row">
+                <div class="col">
+                         <form class="new-task">
+                <input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
+            </form>
+            <!-- https://javascript.info/events-change-input -->
+                </div>
+        </div> 
 </template>
 
 <template name= "addprivate">
-	 <div class="row">
-				<div class="col">
-						 <form class="new-task">
-				<input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
-			</form>
-			<!-- https://javascript.info/events-change-input -->
-				</div>
-		</div> 
+     <div class="row">
+                <div class="col">
+                         <form class="new-task">
+                <input type="text" id="taskpath" class="js-add" name="text" placeholder="Type to add new tasks" />
+            </form>
+            <!-- https://javascript.info/events-change-input -->
+                </div>
+        </div> 
 </template>

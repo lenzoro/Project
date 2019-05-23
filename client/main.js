@@ -5,16 +5,35 @@ import './main.html';
 
 import '../lib/collections.js';
 Template.task.helpers({
-  MainAll() {
-    return tasksDB.find({});
-  },
+	MainAll() {
+    	return tasksDB.find({});
+  	},
   	userLoggedin(){
-  		var logged = tasksDB.findOne({_id:this._id}).postedby;
-  		return Meteor.users.findOne({_id:this._id}).username;
+  		if(Meteor.user())
+  			return Meteor.user().username;
   	},
   	userID(){
-  		return tasksDB({_id:this._id}).postedby;
+  		return tasksDB.findOne({_id:this._id}).postedby;
   	},
+  	isPrivate(){
+  		if(tasksDB.findOne({_id:this._id}).Status=="Private"){
+  			if(Meteor.user()){
+  				if(Meteor.user()._id==tasksDB.findOne({_id:this._id}).PrivateOwner){
+  					console.log("private");
+  					return true;
+  				}
+  			}
+  		}
+  		return false;
+  	},
+
+  	isPublic(){
+  		if(tasksDB.findOne({_id:this._id}).Status=="Public"){
+  			console.log("public");
+			return true;
+  		}
+  		return false;
+  	}
 });
 
 Accounts.ui.config({
@@ -22,20 +41,37 @@ Accounts.ui.config({
 });
 
 Template.add.events({
-  'change .js-add'(event) {
+  	'change .js-add'(event) {
 	   var taskpath = $("#taskpath").val();
 	   $("#taskpath").val('');
       	console.log ("Test");
-      	tasksDB.insert({"Task":taskpath, "createdon":new Date().getTime()}); //, "postedby":Meteor.user()._id});
-  },
+      	tasksDB.insert({'Task':taskpath, 'Complete':false , 'Owner':Meteor.user()._id,'Status':"Public",'PrivateOwner':"",'user':Meteor.user().username});
+  	
+	},
 });
 Template.task.events({
 	'click .js-delete'(event, instance) {
-	var taskID = this._id;
+		var taskID = this._id;
 		console.log (taskID);
-	$("#" + taskID).fadeOut("slow","swing", function(){
-		console.log ("hi");
-		tasksDB.remove({_id:taskID}); 	
-	});
-  },
+		$("#" + taskID).fadeOut("slow","swing", function(){
+			console.log ("hi");
+			tasksDB.remove({_id:taskID}); 	
+		});
+	  },
+	'click .js-completed'(event){
+		var elementname="completed" + this._id;
+		var val = document.getElementById(elementname);
+		tasksDB.update({'_id':this._id},{$set:{'Complete':val.checked}});
+	},
+	'click .js-statuschange'(event){
+		console.log("saving");
+		var elementname = "#TaskStatus" + this._id;
+		var val = $(elementname).val();
+		console.log(val);
+		var ownerval = "";
+		if(val == "Private"){
+			ownerval = Meteor.user()._id;
+		}
+		tasksDB.update({'_id':this._id},{$set:{'PrivateOwner':ownerval,'Status':val}});
+	}
 })
