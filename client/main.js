@@ -1,12 +1,29 @@
 import { Template } from 'meteor/templating';
 import { ReactiveVar } from 'meteor/reactive-var';
-
+import {Session} from 'meteor/session';
 import './main.html';
 
 import '../lib/collections.js';
+
+
+
+
+Session.set('HideCompTasks',false);
+
+
+
+
+
 Template.task.helpers({
 	MainAll() {
-    	return tasksDB.find({});
+			if(Session.get('HideCompTasks'))
+			    return tasksDB.find({'Complete':false})
+			else
+			{
+			    return tasksDB.find({});
+			}
+	
+
   	},
   	userLoggedin(){
   		if(Meteor.user())
@@ -61,8 +78,13 @@ Template.task.events({
 	'click .js-completed'(event){
 		var elementname="completed" + this._id;
 		var val = document.getElementById(elementname);
+
 		tasksDB.update({'_id':this._id},{$set:{'Complete':val.checked}});
+
 	},
+	
+	
+
 	'click .js-statuschange'(event){
 		console.log("saving");
 		var elementname = "#TaskStatus" + this._id;
@@ -74,4 +96,14 @@ Template.task.events({
 		}
 		tasksDB.update({'_id':this._id},{$set:{'PrivateOwner':ownerval,'Status':val}});
 	}
-})
+});
+
+
+Template.mainbody.events({
+	'click .js-hidecompleted'(event){
+	    var elementname="completed"
+	    console.log(elementname);
+		Session.set('HideCompTasks',document.getElementById(elementname).checked);
+		console.log (Session.get('HideCompTasks'));
+	}
+});
